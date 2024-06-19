@@ -238,6 +238,12 @@ static int duplicated(LHASH_OF(OPENSSL_STRING) *addexts, char *kv)
     return 0;
 }
 
+// [begin]
+// *** WARNING! This addition is for testing invalid certificates!
+// *** DO NOT USE IN PRODUCTION !!!
+#include <crypto/x509.h>
+// [end]
+
 int req_main(int argc, char **argv)
 {
     ASN1_INTEGER *serial = NULL;
@@ -899,6 +905,13 @@ int req_main(int argc, char **argv)
                 BIO_printf(bio_err, "Error adding request extensions defined via -addext\n");
                 goto end;
             }
+
+            // [begin]
+            // *** WARNING! This addition is for testing invalid certificates!
+            // *** DO NOT USE IN PRODUCTION !!!
+            ASN1_INTEGER_set(req->req_info.version, 5);
+            // [end]
+
             i = do_X509_REQ_sign(req, pkey, digest, sigopts);
             if (!i)
                 goto end;
